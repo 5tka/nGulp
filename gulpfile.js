@@ -30,6 +30,16 @@ const
 
 const paths = {
   name: "boiler",
+  prod: { //Куда складывать готовые файлы
+    server: 'prod/',
+    html: 'prod/',
+    js: 'prod/js/',
+    jsVendor: 'prod/js/',
+    css: 'prod/css/',
+    img: 'prod/img/',
+    fonts: 'prod/css/fonts/',
+    favicon: 'prod/favicon/'
+  },
   build: { //Куда складывать готовые файлы
     server: 'build/',
     html: 'build/',
@@ -68,13 +78,21 @@ var msgCommit = 'first commit'; // default
 function favicon_fn() {
   return gulp.src(paths.src.favicon)
     .pipe(plumber())
-    .pipe(gulp.dest(paths.build.favicon))
+    .pipe(gulpif(
+      production,
+      gulp.dest(paths.prod.favicon),
+      gulp.dest(paths.build.favicon)
+    ))
     .pipe(browserSync.stream());
 }
 function fonts_fn() {
   return gulp.src(paths.src.fonts)
     .pipe(plumber())
-    .pipe(gulp.dest(paths.build.fonts))
+    .pipe(gulpif(
+      production,
+      gulp.dest(paths.prod.fonts),
+      gulp.dest(paths.build.fonts)
+    ))
     .pipe(browserSync.stream());
 }
 function imgmin_fn() {
@@ -84,7 +102,11 @@ function imgmin_fn() {
       production,
       imagemin({ optimizationLevel: 3, progressive: true })
     ))
-    .pipe(gulp.dest(paths.build.img))
+    .pipe(gulpif(
+      production,
+      gulp.dest(paths.prod.img),
+      gulp.dest(paths.build.img)
+    ))
     .pipe(browserSync.stream());
 }
 function js_fn() {
@@ -96,7 +118,11 @@ function js_fn() {
       uglify()
     ))
     .pipe(concat('script.js'))
-    .pipe(gulp.dest(paths.build.js))
+    .pipe(gulpif(
+      production,
+      gulp.dest(paths.prod.js),
+      gulp.dest(paths.build.js)
+    ))
     .pipe(browserSync.stream());
 }
 function jsV_fn() {
@@ -108,7 +134,11 @@ function jsV_fn() {
       uglify()
     ))
     .pipe(concat('vendor.js'))
-    .pipe(gulp.dest(paths.build.js))
+    .pipe(gulpif(
+      production,
+      gulp.dest(paths.prod.jsVendor),
+      gulp.dest(paths.build.jsVendor)
+    ))
     .pipe(browserSync.stream());
 }
 function pug_fn() {
@@ -118,7 +148,11 @@ function pug_fn() {
     .pipe(print(filepath => "saved " + filepath))
     .pipe(pug({ pretty: true }))
     .on('error', console.log)
-    .pipe(gulp.dest(paths.build.html))
+    .pipe(gulpif(
+      production,
+      gulp.dest(paths.prod.html),
+      gulp.dest(paths.build.html)
+    ))
     .pipe(browserSync.stream());
 }
 
@@ -146,27 +180,34 @@ function sass_fn() {
     .pipe(remember('sass'))
     .pipe(concat('main.css'))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(paths.build.css))
+    .pipe(gulpif(
+      production,
+      gulp.dest(paths.prod.css),
+      gulp.dest(paths.build.css)
+    ))
     .pipe(browserSync.stream());
 }
 function criticalCss_fn() {
   return gulp.src('build/css/main.css')
     .pipe(criticalCss())
-    .pipe(gulp.dest(paths.build.css))
+    .pipe(gulpif(
+      production,
+      gulp.dest(paths.prod.css),
+      gulp.dest(paths.build.css)
+    ))
 }
-function clean_fn() {
-  return gulp.src(paths.build.html)
-    .pipe(clean());
-}
-function rtl_fn() {
-  return gulp.src('build/css/main.css')
-    .pipe(rtlcss())
-    .pipe(rename({ suffix: '-rtl' }))
-    .pipe(gulp.dest(paths.build.css))
-}
+// function rtl_fn() {
+//   return gulp.src('build/css/main.css')
+//     .pipe(rtlcss())
+//     .pipe(rename({ suffix: '-rtl' }))
+//     .pipe(gulpif(
+//       production,
+//       gulp.dest(paths.prod.css),
+//       gulp.dest(paths.build.css)
+//     ))
+// }
+// exports.rtl_fn = rtl_fn;
 
-exports.rtl_fn = rtl_fn;
-exports.clean_fn = clean_fn;
 exports.criticalCss_fn = criticalCss_fn;
 exports.imgmin_fn = imgmin_fn;
 exports.sass_fn = sass_fn;
@@ -201,7 +242,6 @@ var build = gulp.series(
 );
 
 var prod = gulp.series(
-  clean_fn,
   build
 );
 
@@ -211,9 +251,10 @@ gulp.task('prod', prod);
 // ===========================
 
 gulp.task('build', build);
-
 gulp.task('default', gulp.series(build, watch_fn));
 
+
+// ============================================================
 // GOOGLE PAGE SPPED
 // var psi = require('psi');
 // var site = 'http://www.html5rocks.com';
@@ -239,7 +280,8 @@ gulp.task('default', gulp.series(build, watch_fn));
 //   });
 // });
 
-
+// =============================================================
+// ftp
 function deploy() {
   var conn = ftp.create({
     host: 'lum.zzz.com.ua',
@@ -256,8 +298,7 @@ function deploy() {
 exports.deploy = deploy;
 
 
-
-
+// ==============================================================
 // git 
 function init() {
   return git.init(function (err) {
