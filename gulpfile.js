@@ -62,6 +62,8 @@ const paths = {
 };
 
 var production = false; //true
+var gitRepo = 'git@github.com:5tka/nGulp.git';
+var msgCommit = 'first commit'; // default
 
 function favicon_fn() {
   return gulp.src(paths.src.favicon)
@@ -125,7 +127,6 @@ var sassPipeChain =
     .pipe(gcmq)
     .pipe(shorthand)
     .pipe(cssnano, 'discardComments: { removeAll: true }')
-
 function sass_fn() {
   return gulp.src(paths.src.scss)
     .pipe(plumber())
@@ -246,16 +247,10 @@ function deploy() {
     password: '',
     parallel: 10,
   });
-
   var globs = [
     'build/**'
   ];
-
-  // using base = '.' will transfer everything to /public_html correctly
-  // turn off buffering in gulp.src for best performance
-
   return gulp.src(globs, { base: '.', buffer: false })
-    // .pipe(conn.newer('/public_html')) // only upload newer files
     .pipe(conn.dest('/lum.zzz.com.ua/'));
 }
 exports.deploy = deploy;
@@ -264,8 +259,6 @@ exports.deploy = deploy;
 
 
 // git 
-var gitRepo = 'git@github.com:5tka/nGulp.git';
-
 function init() {
   return git.init(function (err) {
     if (err) throw err;
@@ -275,7 +268,7 @@ function add() {
   return gulp.src('./').pipe(git.add());
 }
 function commit() {
-  return gulp.src('./').pipe(git.commit('fc'));
+  return gulp.src('./').pipe(git.commit(msgCommit));
 }
 function addremote() {
   return git.addRemote('origin', gitRepo, (err) => {
@@ -301,15 +294,12 @@ var gitPushFirstCommit = gulp.series(
   addremote,
   push
 );
-
 var gitPullPushCommit = gulp.series(
   add,
   commit,
   pull,
   push
 );
-
-
 
 // ===========================
 gulp.task('push', gitPushFirstCommit);
