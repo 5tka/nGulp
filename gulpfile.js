@@ -242,7 +242,7 @@ gulp.task('default', gulp.series(build, watch_fn));
 function deploy() {
   var conn = ftp.create({
     host: 'lum.zzz.com.ua',
-    user: '5tka',
+    user: '',
     password: '',
     parallel: 10,
   });
