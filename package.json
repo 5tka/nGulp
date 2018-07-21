@@ -1,0 +1,49 @@
+{
+  "name": "Start",
+  "version": "0.0.1",
+  "description": "Boilerplate",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-cached": "^1.1.1",
+    "gulp-clean": "^0.4.0",
+    "gulp-cond": "^1.0.0",
+    "gulp-cssnano": "latest",
+    "gulp-dependents": "^1.2.3",
+    "gulp-directory-sync": "^1.2.3",
+    "gulp-file-sync": "^2.0.0",
+    "gulp-git": "^2.7.0",
+    "gulp-group-css-media-queries": "^1.2.0",
+    "gulp-if": "^2.0.2",
+    "gulp-newer": "^1.4.0",
+    "gulp-penthouse": "^0.2.0",
+    "gulp-plumber": "latest",
+    "gulp-print": "^5.0.0",
+    "gulp-remember": "^1.0.1",
+    "gulp-rename": "latest",
+    "gulp-rigger": "^0.5.8",
+    "gulp-rtlcss": "^1.2.0",
+    "gulp-shorthand": "latest",
+    "gulp-watch": "latest",
+    "lazypipe": "^1.0.1",
+    "merge-stream": "^1.0.1",
+    "vinyl-ftp": "^0.6.1"
+  },
+  "dependencies": {
+    "browser-sync": "latest",
+    "gulp-autoprefixer": "latest",
+    "gulp-concat": "latest",
+    "gulp-critical-css": "^1.0.1",
+    "gulp-imagemin": "latest",
+    "gulp-pug": "latest",
+    "gulp-sass": "latest",
+    "gulp-sourcemaps": "latest",
+    "gulp-uglify": "latest",
+    "psi": "^3.1.0"
+  }
+}
