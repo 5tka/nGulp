@@ -44,7 +44,6 @@ const paths = {
     server: 'build/',
     html: 'build/',
     js: 'build/js/',
-    jsVendor: 'build/js/vendor/',
     css: 'build/css/',
     img: 'build/img/',
     fonts: 'build/css/fonts/',
@@ -71,7 +70,7 @@ const paths = {
   }
 };
 
-var production = false; //true
+var production = false; //true //== false default
 var gitRepo = 'git@github.com:5tka/nGulp.git';
 var msgCommit = 'first commit'; // default
 
@@ -136,8 +135,8 @@ function jsV_fn() {
     .pipe(concat('vendor.js'))
     .pipe(gulpif(
       production,
-      gulp.dest(paths.prod.jsVendor),
-      gulp.dest(paths.build.jsVendor)
+      gulp.dest(paths.prod.js),
+      gulp.dest(paths.build.js)
     ))
     .pipe(browserSync.stream());
 }
