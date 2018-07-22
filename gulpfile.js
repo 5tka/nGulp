@@ -51,7 +51,7 @@ const paths = {
   },
   src: { //Пути откуда брать исходники
     root: 'src/',
-    pug: ['src/pug/*.pug', '!src/pug/_*.pug'],
+    pug: ['src/pug/*.pug', '!src/pug/_*.pug'], // компилирую только те файлы, что заканч. на *.pug
     js: 'src/js/script.js',
     jsVendor: 'src/js/vendor.js',
     scss: ['src/sass/**/*.scss', 'src/sass/_*.scss'],
@@ -69,6 +69,13 @@ const paths = {
     fonts: 'src/fonts/*'
   }
 };
+
+const ftpConfig = {
+  host: 'lum.zzz.com.ua',
+  user: '',
+  password: '',
+  dest: '/lum.zzz.com.ua/projectFolder'
+}
 
 var production = false; //true //== false default
 var gitRepo = 'git@github.com:5tka/nGulp.git';
@@ -282,17 +289,18 @@ gulp.task('default', gulp.series(build, watch_fn));
 // =============================================================
 // ftp
 function deploy() {
+
   var conn = ftp.create({
-    host: 'lum.zzz.com.ua',
-    user: '',
-    password: '',
+    host: ftpConfig.host,
+    user: ftpConfig.user,
+    password: ftpConfig.password,
     parallel: 10,
   });
   var globs = [
     'build/**'
   ];
   return gulp.src(globs, { base: '.', buffer: false })
-    .pipe(conn.dest('/lum.zzz.com.ua/'));
+    .pipe(conn.dest(ftpConfig.dest));
 }
 exports.deploy = deploy;
 
@@ -344,4 +352,4 @@ var gitPullPushCommit = gulp.series(
 // ===========================
 gulp.task('push', gitPushFirstCommit);
 // ===========================
-gulp.task('pullpush', gitPullPushCommit);
+gulp.task('pp', gitPullPushCommit);
